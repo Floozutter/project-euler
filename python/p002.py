@@ -4,22 +4,30 @@ Project Euler - Problem 2
 four million, find the sum of the even-valued terms."
 """
 
-def evenfibsum(upperbound: int) -> int:
+from itertools import takewhile
+from typing import Generator
+
+
+def evenfibs() -> Generator[int, None, None]:
     """
-    Sums every even Fibonacci number below an upper bound.
-    This implementation avoids checking integer parity by leveraging the
-    mathematical fact that every third Fibonacci number is even.
+    Yields even Fibonacci numbers, starting with 2.
+    Avoids checking integer parity by leveraging the mathematical fact that
+    every third Fibonacci number is even.
     This insight was taken from the user Begoner from the problem's discussion
     thread on the Project Euler website.
     """
-    total = 0
     last, curr = 1, 2
-    while curr < upperbound:
-        total += curr
+    while True:
+        yield curr
         last, curr = curr, last+curr  # curr will be odd
         last, curr = curr, last+curr  # curr will be odd, again
         last, curr = curr, last+curr  # curr will be even
-    return total
+
+def evenfibsum(upperbound: int) -> int:
+    """
+    Sums every even Fibonacci number that is below an upper bound.
+    """
+    return sum(takewhile(lambda z: z < upperbound, evenfibs()))
 
 
 def answer() -> str:
