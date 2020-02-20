@@ -3,7 +3,6 @@ Project Euler - Problem 4
 "Find the largest palindrome made from the product of two 3-digit numbers."
 """
 
-from itertools import combinations_with_replacement
 from heapq import merge
 from typing import Iterable
 
