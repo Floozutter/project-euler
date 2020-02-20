@@ -4,6 +4,8 @@ Project Euler - Problem 4
 """
 
 from itertools import combinations_with_replacement
+from heapq import merge
+from typing import Iterable
 
 
 def palindromic(s: str) -> bool:
@@ -15,16 +17,31 @@ def palindromic(s: str) -> bool:
         if s[i] != s[size - 1 - i]:
             return False
     return True
-        
+
+def descending_products(incl_upper: int, excl_lower: int) -> Iterable[int]:
+    """
+    Returns every product of two ranged factors, in descending order.
+    The upper bound is inclusive, the lower bound is exclusive.
+    Works by generating sorted rows of multiples for each ranged factor, then
+    merging the sorted rows together with heapq.
+    """
+    def multiples(factor: int) -> Iterable[int]:
+        """
+        Returns multiples of the factor, in descending order.
+        The multiples are within the bounds [factor*factor, factor*excl_lower).
+        """
+        return [factor*n for n in range(factor, excl_lower, -1)]
+    rows = (multiples(factor) for factor in range(incl_upper, excl_lower, -1))
+    return merge(*rows, reverse=True)
+
 def largest_palindrome_product(digits: int) -> int:
     """
     Returns the largest palindrome product of two n-digit numbers.
     """
-    factors = range(10**(digits-1), 10**digits)
-    pairs = combinations_with_replacement(factors, 2)
-    products = (p[0]*p[1] for p in pairs)
-    sortedproducts = sorted(products, reverse=True)
-    return next(filter(lambda z: palindromic(str(z)), sortedproducts))
+    upper = 10**digits - 1      # inclusive upper bound for n-digit factors
+    lower = 10**(digits-1) - 1  # exclusive lower bound for n-digit factors
+    products = descending_products(upper, lower)
+    return next(filter(lambda z: palindromic(str(z)), products))
 
 
 def answer() -> str:
