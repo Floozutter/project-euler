@@ -4,38 +4,28 @@ Project Euler - Problem 5
 numbers from 1 to 20?"
 """
 
-from itertools import chain
-from typing import Set, FrozenSet
+from math import gcd
+from functools import reduce
 
 
-def factors(n: int) -> FrozenSet[int]:
+def lcm(a: int, b: int) -> int:
     """
-    Returns a FrozenSet of a natural number's factors.
+    Returns the least common multiple of two natural numbers.
     """
-    factors = chain(
-        filter(lambda i: n%i == 0, range(1, n)),
-        (n,)  # Iterable Tuple of only n (a number is its own factor)
-    )
-    return frozenset(factors)
+    return (a*b) // gcd(a, b)
 
-def smallest_multiple(upper: int) -> int:
+def lcm_of_naturals(terms: int) -> int:
     """
-    Returns the smallest multiple of the numbers in [1, upper].
+    Returns the least common multiple of the first n natural numbers.
     """
-    smolmult = 1  # running product for the smallest multiple
-    included_factors = set()
-    for i in range(upper, 0, -1):
-        if i not in included_factors:
-            smolmult *= i
-            included_factors.update(factors(i))
-    return smolmult
+    return reduce(lcm, range(1, terms+1), 1)
             
 
 def answer() -> str:
     """
     Returns the answer to the problem as a string.
     """
-    return str(smallest_multiple(10))
+    return str(lcm_of_naturals(20))
 
 
 if __name__ == "__main__":
