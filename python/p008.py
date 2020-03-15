@@ -20,7 +20,7 @@ def sliding_window(
     slicesize: int
 ) -> Generator[Sequence[Any], None, None]:
     """
-    Yields same-sized List slices of the argument List.
+    Yields same-sized slices of the argument Sequence.
     """
     for i in range(len(seq) - slicesize + 1):
         yield seq[i : i+slicesize]
