@@ -9,12 +9,18 @@ from operator import mul
 from typing import Sequence, Generator, Any
 
 
+def prod(digits: str) -> int:
+    """
+    Returns the product of a string of digits.
+    """
+    return reduce(mul, map(int, digits))
+
 def sliding_window(
     seq: Sequence[Any],
     slicesize: int
 ) -> Generator[Sequence[Any], None, None]:
     """
-    Yields same-sized slices of the argument Sequence.
+    Yields same-sized List slices of the argument List.
     """
     for i in range(len(seq) - slicesize + 1):
         yield seq[i : i+slicesize]
@@ -23,10 +29,25 @@ def lpoad(digits: str, slicesize: int) -> int:
     """
     Returns the largest product of adjacent digits from a string of digits.
     """
-    digslices = sliding_window(digits, slicesize)        # slices of strings
-    intslices = (map(int, slc)    for slc in digslices)  # slices of integers
-    products  = (reduce(mul, slc) for slc in intslices)  # integers
-    return max(products)
+    # Group the string of digits into overlapping slices.
+    digslcs = sliding_window(digits, slicesize)
+    # Begin by accumulating the product of the first slice.
+    product = prod(next(digslcs))  # Product of the current slice.
+    largest = product    # Largest product encountered.
+    lastdig = digits[0]  # Oldest digit of the previous slice.
+    # Get each next product by first dividing out the oldest digit of the
+    # previous slice, then multiplying in the newest digit of the next slice.
+    for ds in digslcs:
+        if lastdig == "0":      # Zero results in information loss.
+            product = prod(ds)  # Accumulate again.
+        else:
+            product //= int(lastdig)  # Divide out oldest digit.
+            product  *= int(ds[-1])   # Multiply in newest digit.
+        lastdig = ds[0]  # Update oldest digit.
+        # Update largest when applicable.
+        if product > largest:
+            largest = product
+    return largest
     
 
 def answer() -> str:
