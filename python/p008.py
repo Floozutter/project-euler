@@ -6,7 +6,7 @@ greatest product. What is the value of this product?"
 
 from functools import reduce
 from operator import mul
-from typing import Sequence, Generator, Any
+from typing import Sequence, Generator, TypeVar
 
 
 def prod(digits: str) -> int:
@@ -15,10 +15,11 @@ def prod(digits: str) -> int:
     """
     return reduce(mul, map(int, digits))
 
+T = TypeVar("T")
 def sliding_window(
-    seq: Sequence[Any],
+    seq: Sequence[T],
     slicesize: int
-) -> Generator[Sequence[Any], None, None]:
+) -> Generator[Sequence[T], None, None]:
     """
     Yields same-sized slices of the argument Sequence.
     """
@@ -38,7 +39,7 @@ def lpoad(digits: str, slicesize: int) -> int:
     # Get each next product by first dividing out the oldest digit of the
     # previous slice, then multiplying in the newest digit of the next slice.
     for ds in digslcs:
-        if lastdig == "0":      # Zero results in information loss.
+        if lastdig == "0":      # A zero results in information loss.
             product = prod(ds)  # Accumulate again.
         else:
             product //= int(lastdig)  # Divide out oldest digit.
