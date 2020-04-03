@@ -9,7 +9,7 @@ from operator import mul
 from typing import Sequence, Generator, TypeVar
 
 
-def prod(digits: str) -> int:
+def prod(digits: Sequence[str]) -> int:
     """
     Returns the product of a string of digits.
     """
